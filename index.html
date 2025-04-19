@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Examen3</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <style>
+    .img-fija {
+      height: 180px;
+      object-fit: cover;
+    }
+    /* FOOTER */
+.footer {
+  background: linear-gradient(135deg, #ff7f50, #ffcc00); 
+  color: white;
+  padding: 5px 20px;
+  margin-top: 60px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+
+.footer h3 {
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.subscribe-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; 
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.subscribe-form input {
+  padding: 10px;
+  border-radius: 8px 0 0 8px; /* Bordes redondeados solo a la izquierda */
+  border: none;
+  width: 240px; 
+  font-size: 14px;
+  outline: none; 
+}
+
+.subscribe-form button {
+  padding: 10px 16px;
+  border-radius: 0 8px 8px 0; 
+  background: hsl(0, 91%, 60%);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+.footer-info {
+  display: flex;                    
+  justify-content: flex-start;        
+  gap: 20px;                          
+}
+
+.footer-info .column {
+  display: flex;
+  flex-direction: column;         
+  gap: 5px;                
+}
+
+.footer-info p {
+  margin: 0;                          
+  color: white;                      
+}
+
+.social-media {
+  display: flex;       
+  gap: 15px;                
+  justify-content: flex-end; 
+}
+
+.social-media a {
+  color: white;
+  font-size: 20px;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.social-media a:hover {
+  color: white; 
+}
+.social-icon {
+  color: white;
+  background: hsl(0, 91%, 60%);;
+  padding: 12px; 
+  transition: background-color 0.3s, color 0.3s; 
+}
+
+.social-icon:hover {
+  background-color: hsl(0, 91%, 60%);;  
+}
+
+  </style>
+</head>
+<body class="bg-danger text-white">
+  <nav class="navbar fixed-top py-3" style="background-color: orange; z-index: 1030">
+    <div class="container d-flex justify-content-center">
+      <div class="d-flex flex-wrap justify-content-center align-items-center gap-5">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUsuarios">Usuarios</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCompra">Detalle Producto</button>
+        <button class="btn btn-primary ms-auto" onclick="verHistorial()">Ver Registros</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4" style="background-color: antiquewhite">
+    <br><br><br>
+    <!-- Categorías -->
+    <div class="mb-4 d-flex flex-wrap gap-2">
+        <button class="btn btn-warning" onclick="mostrarCategoria('Computadoras')">Computadoras</button>
+        <button class="btn btn-warning" onclick="mostrarCategoria('Teléfonos')">Teléfonos</button>
+        <button class="btn btn-warning position-relative" onclick="mostrarCategoria('Accesorios')">
+            Accesorios
+            <span class="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-pill shadow-sm">
+              Agotado
+            </span>
+          </button>
+                  <button class="btn btn-warning position-relative" onclick="mostrarCategoria('Monitores')">
+            Monitores
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              Agotado
+            </span>
+          </button>
+                  <button class="btn btn-warning" onclick="mostrarCategoria('Periféricos')">Periféricos</button>
+        
+    </div>
+
+    <!-- Productos -->
+    <div id="productosContainer" class="row row-cols-1 row-cols-md-2 row-cols-lg-2 g-4"></div>
+
+<!-- Modal para mostrar el carrito -->
+<div class="modal fade" id="modalCompra" tabindex="-1" aria-labelledby="modalCompraLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalCompraLabel">Tu Carrito de Compras</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive rounded-4 shadow-lg">
+            <table class="table table-striped table-hover align-middle text-center border border-light-subtle rounded-4 overflow-hidden">
+              <thead class="bg-dark text-white">
+                <tr>
+                  <th scope="col"><i class="bi bi-cpu-fill me-1"></i>Producto</th>
+                  <th scope="col"><i class="bi bi-sort-numeric-up me-1"></i>Cantidad</th>
+                  <th scope="col"><i class="bi bi-cash-coin me-1"></i>Precio</th>
+                  <th scope="col"><i class="bi bi-graph-up-arrow me-1"></i>Total</th>
+                  <th scope="col"><i class="bi bi-gear-wide-connected me-1"></i>Eliminar</th>
+                </tr>
+              </thead>
+              <tbody id="carritoLista" class="bg-body-tertiary">
+                <!-- Aquí se insertan dinámicamente los productos -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" onclick="finalizarCompraF()">Finalizar Compra</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Datos del cliente -->
+    <div class="modal fade" id="modalUsuarios" tabindex="-1" aria-labelledby="modalUsuariosLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalUsuariosLabel">Datos del Cliente</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3 row">
+                <div class="col-md-6">
+                  <input type="text" id="nombreCliente" class="form-control mb-2" placeholder="Nombre" />
+                </div>
+                <div class="col-md-6">
+                  <input type="text" id="apellidosCliente" class="form-control mb-2" placeholder="Apellidos" />
+                </div>
+                <div class="col-md-6">
+                  <input type="email" id="correoCliente" class="form-control mb-2" placeholder="Correo electrónico" />
+                </div>
+                <div class="col-md-6">
+                  <input type="tel" id="celularCliente" class="form-control mb-2" placeholder="Celular" />
+                </div>
+                <div class="col-md-12">
+                  <input type="text" id="direccionCliente" class="form-control" placeholder="Dirección" />
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-success" onclick="finalizarCompra()">Finalizar Compra</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    <!-- Historial de ventas -->
+    <div class="mt-5 d-none" id="historialSection">
+        <div class="card shadow border-0">
+          <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">Ventas Realizadas</h4>
+          </div>
+          <div class="card-body p-0">
+            <table class="table table-hover table-bordered mb-0">
+              <thead class="table-dark text-center">
+                <tr>
+                  <th>Cliente</th>
+                  <th>Dirección</th>
+                  <th>Total</th>
+                  <th>Info / Eliminar</th>
+                </tr>
+              </thead>
+              <tbody id="historialTabla" class="text-center align-middle">
+                <!-- Filas dinámicas -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+
+    <!-- Modal -->
+    <div class="modal fade" id="detalleModal" tabindex="-1" aria-labelledby="detalleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content shadow-lg rounded-4 border-0">
+            <div class="modal-header bg-primary text-white rounded-top-4">
+              <h5 class="modal-title fw-bold" id="detalleModalLabel">📋 Detalle de Venta</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-4 text-dark fw-bold" id="detalleVenta">
+              <!-- Aquí se mostrará dinámicamente el detalle -->
+            </div>
+            <div class="modal-footer bg-light rounded-bottom-4 fw-bold">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+  <!-- Modal de compra-->
+  <div class="modal fade" id="modalCompraExitosa" tabindex="-1" aria-labelledby="modalCompraExitosaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center">
+        <div class="modal-header">
+          <h5 class="modal-title w-100 bg-dark" id="modalCompraExitosaLabel">¡Éxito!</h5>
+        </div>
+        <div class="modal-body">
+          <p class="text-dark">Se ha agregado la compra exitosamente.</p>
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para confirmar eliminación -->
+  <div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" aria-labelledby="modalConfirmarEliminarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-dark" id="modalConfirmarEliminarLabel">¿Estás seguro de eliminar esta venta?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <button type="button" class="btn btn-danger" id="btnAceptarEliminar">Aceptar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="footer">
+    <h3>TuMOMO - Venta de Tecnologías</h3>
+    <div class="subscribe-form">
+      <input type="email" id="email" placeholder="Suscríbete para más novedades" />
+      <button id="subscribe-button" type="submit">Suscribirse</button>
+    </div>
+
+    <div class="footer-info">
+      <div class="column">
+        <p><strong>Correo</strong></p>
+        <p>tumomo@gmail.com</p>
+        <p><strong>Contáctanos</strong></p>
+        <p>+591 67455079</p>
+      </div>
+      <div class="column">
+        <p><strong>Facebook</strong></p>
+        <p>TuMOMO</p>
+      </div>
+    </div>
+
+    <div class="social-media">
+      <a href="https://www.facebook.com/profile.php?id=100080678610093" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://wa.link/a452wp" class="social-icon" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    let db;
+    let carrito = [];
+
+    window.onload = () => {
+      const request = indexedDB.open("Examen3", 1);
+
+      request.onupgradeneeded = e => {
+        db = e.target.result;
+        const productosStore = db.createObjectStore("productos", { keyPath: "id", autoIncrement: true });
+        productosStore.createIndex("categoria", "categoria", { unique: false });
+        db.createObjectStore("clientes", { keyPath: "id", autoIncrement: true });
+        db.createObjectStore("ventas", { keyPath: "id", autoIncrement: true });
+        cargarDatosIniciales(productosStore);
+      };
+
+      request.onsuccess = e => {
+        db = e.target.result;
+        cargarProductos();
+      };
+    };
+
+    function cargarDatosIniciales(store) {
+      const productos = [
+        { nombre: "Laptop Dell Inspiron 15", precio: 5000, categoria: "Computadoras", imagen: "https://soytechno.com/wp-content/uploads/2024/07/3ba396_e7f18dc8330b4a889d2c7d38cd6a1bd2mv2.webp" },
+        { nombre: "HP Pavilion x360", precio: 5550, categoria: "Computadoras", imagen: "https://pe-media.hptiendaenlinea.com/catalog/product/cache/b3b166914d87ce343d4dc5ec5117b502/3/Y/3Y799LA-1_T1679065358.png" },
+        { nombre: "MacBook Air M1", precio: 9000, categoria: "Computadoras", imagen: "https://cdn.mos.cms.futurecdn.net/gPvyaz76tASn87RCGuSdDc.jpg" },
+        { nombre: "Laptop Lenovo ThinkPad", precio: 3500, categoria: "Computadoras", imagen: "https://charatec.com.pe/1472-home_default/laptop-lenovo-thinkpad-l15-gen-4-15-6-fhd-core-i5-1335u-16gb-512gb-ssd-w11-pro-np-21h4000nlm.jpg" },
+        { nombre: "iPhone 13 Pro Max", precio: 8000, categoria: "Teléfonos", imagen: "https://i.ytimg.com/vi/5bgWxMGnlvc/maxresdefault.jpg" },
+        { nombre: "Kit kombo", precio: 400, categoria: "Periféricos", imagen: "https://img.pikbest.com/origin/06/46/16/173pIkbEsTCG5.jpg!sw800" }
+
+      ];
+
+      productos.forEach(producto => {
+        store.add(producto);
+      });
+    }
+
+    function cargarProductos() {
+      const transaction = db.transaction("productos", "readonly");
+      const store = transaction.objectStore("productos");
+      const request = store.getAll();
+
+      request.onsuccess = e => {
+        const productos = e.target.result;
+        mostrarProductos(productos);
+      };
+    }
+
+    function mostrarProductos(productos) {
+      const productosContainer = document.getElementById("productosContainer");
+      productosContainer.innerHTML = "";
+      productos.forEach(producto => {
+        const productoHTML = `
+          <div class="col">
+            <div class="card">
+              <img src="${producto.imagen}" class="card-img-top img-fija" alt="${producto.nombre}">
+              <div class="card-body">
+                <h5 class="card-title">${producto.nombre}</h5>
+                <p class="card-text">Bs. ${producto.precio}</p>
+                <button class="btn btn-primary" onclick="agregarAlCarrito(${producto.id}, '${producto.nombre}', ${producto.precio})">Agregar al carrito</button>
+              </div>
+            </div>
+          </div>
+        `;
+        productosContainer.innerHTML += productoHTML;
+      });
+    }
+
+    function agregarAlCarrito(id, nombre, precio) {
+      const productoExistente = carrito.find(item => item.id === id);
+
+      if (productoExistente) {
+        productoExistente.cantidad++;
+      } else {
+        carrito.push({ id, nombre, precio, cantidad: 1 });
+      }
+      mostrarCarrito();
+    }
+
+    function mostrarCarrito() {
+      const carritoTabla = document.getElementById("carritoLista");
+      carritoTabla.innerHTML = "";
+      let total = 0;
+
+      carrito.forEach((item, index) => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        carritoTabla.innerHTML += `
+          <tr>
+            <td>${item.nombre}</td>
+            <td>${item.cantidad}</td>
+            <td>Bs. ${item.precio}</td>
+            <td>Bs. ${subtotal}</td>
+            <td>
+              <button class="btn btn-danger" onclick="eliminarDelCarrito(${index})">Eliminar</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      const totalCarrito = document.createElement("tr");
+      totalCarrito.innerHTML = `
+        <td colspan="5">Total</td>
+        <td>Bs. ${total}</td>
+      `;
+      carritoTabla.appendChild(totalCarrito);
+    }
+
+    function eliminarDelCarrito(index) {
+      carrito.splice(index, 1);
+      mostrarCarrito();
+    }
+
+    function mostrarCategoria(categoria) {
+      const transaction = db.transaction("productos", "readonly");
+      const store = transaction.objectStore("productos");
+      const request = store.index("categoria").getAll(categoria);
+
+      request.onsuccess = e => {
+        const productos = e.target.result;
+        mostrarProductos(productos);
+      };
+    }
+
+    function verHistorial() {
+      const historialSection = document.getElementById("historialSection");
+      historialSection.classList.toggle("d-none");
+
+      if (!historialSection.classList.contains("d-none")) {
+        cargarHistorial();
+      }
+    }
+
+    function cargarHistorial() {
+      const transaction = db.transaction("ventas", "readonly");
+      const store = transaction.objectStore("ventas");
+      const request = store.getAll();
+
+      request.onsuccess = e => {
+        const ventas = e.target.result;
+        mostrarHistorial(ventas);
+      };
+    }
+
+    function mostrarHistorial(ventas) {
+      const historialTabla = document.getElementById("historialTabla");
+      historialTabla.innerHTML = "";
+
+      ventas.forEach(venta => {
+        historialTabla.innerHTML += `
+          <tr>
+            <td>${venta.cliente.nombre} </td>
+            <td>${venta.cliente.direccion}</td>
+            <td>Bs. ${venta.total}</td>
+            <td>
+              <!-- Botón Ver Detalles -->
+             <!-- Estilos personalizados --><
+             style>
+             .btn-pill {
+             border-radius: 50px;
+             padding: 6px 16px;
+             font-weight: 600;
+             transition: all 0.3s ease-in-out;
+             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+             }
+             .btn-pill:hover {
+             transform: scale(1.05);
+             }
+             </style>
+             <div class="d-flex justify-content-start gap-2">
+              <!-- Botón Ver Detalles -->
+              <button class="btn btn-primary btn-pill btn-sm d-flex align-items-center gap-2" onclick="verDetalleVenta(${venta.id})"
+                <i class="bi bi-eye-fill"></i> Ver Detalles
+                </button>
+                <!-- Botón Eliminar -->
+                <button class="btn btn-danger btn-pill btn-sm d-flex align-items-center gap-2" onclick="eliminarVenta(${venta.id})">
+                  <i class="bi bi-trash3-fill"></i> Eliminar
+                  </button>
+                  </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function verDetalleVenta(id) {
+      const transaction = db.transaction("ventas", "readonly");
+      const store = transaction.objectStore("ventas");
+      const request = store.get(id);
+
+      request.onsuccess = e => {
+        const venta = e.target.result;
+        const detalleVenta = document.getElementById("detalleVenta");
+        detalleVenta.innerHTML = `
+          <h5>Cliente: ${venta.cliente.nombre}</h5>
+          <p>Dirección: ${venta.cliente.direccion}</p>
+          <p>Total: Bs. ${venta.total}</p>
+          <ul>
+            ${venta.productos.map(item => `<li>${item.nombre} - Cantidad: ${item.cantidad} - Precio: Bs. ${item.precio}</li>`).join('')}
+          </ul>
+        `;
+        const modalDetalle = new bootstrap.Modal(document.getElementById("detalleModal"));
+        modalDetalle.show();
+      };
+    }
+
+    function eliminarVenta(id) {
+      const transaction = db.transaction("ventas", "readwrite");
+      const store = transaction.objectStore("ventas");
+      store.delete(id);
+
+      transaction.oncomplete = () => {
+        cargarHistorial();
+      };
+    }
+
+    function finalizarCompra() {
+      const nombreCliente = document.getElementById("nombreCliente").value;
+      const direccionCliente = document.getElementById("direccionCliente").value;
+
+      if (nombreCliente && direccionCliente && carrito.length > 0) {
+        const total = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+        const venta = {
+          cliente: { nombre: nombreCliente, direccion: direccionCliente },
+          productos: carrito,
+          total: total
+        };
+
+        const transaction = db.transaction("ventas", "readwrite");
+        const store = transaction.objectStore("ventas");
+        store.add(venta);
+
+        transaction.oncomplete = () => {
+          carrito = [];
+          document.getElementById("nombreCliente").value = "";
+          document.getElementById("direccionCliente").value = "";
+          mostrarCarrito();
+          const modalCompraExitosa = new bootstrap.Modal(document.getElementById("modalCompraExitosa"));
+          modalCompraExitosa.show();
+        };
+      } else {
+        alert("Aún faltan datos..");
+      }
+    }
+  </script>
+</body>
+</html>
